@@ -34,6 +34,13 @@
 
 		this.scaled = true;
 
+		// CUSTOM: Determine the direction of the zoom
+		if(this.scale < scale) {
+			this.zoomDirection = 'in';
+		} else {
+			this.zoomDirection = 'out';
+		}
+
 		// CUSTOM: Modified to add switch to turn off 'bounce' effect on zooming - will default to normal behaviour
 		if ( scale < this.options.zoomMin ) {
 			scale = this.options.zoomBounce ? 0.5 * this.options.zoomMin * Math.pow(2.0, scale / this.options.zoomMin) : this.options.zoomMin;
@@ -116,6 +123,14 @@
 		}
 
 		var relScale = scale / this.scale;
+
+		// CUSTOM: Determine the direction of the zoom
+		if(this.scale < scale) {
+			this.zoomDirection = 'in';
+		} else {
+			this.zoomDirection = 'out';
+		}
+
 
 		x = x === undefined ? this.wrapperWidth / 2 : x;
 		y = y === undefined ? this.wrapperHeight / 2 : y;
