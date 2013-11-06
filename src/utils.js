@@ -101,7 +101,7 @@ var utils = (function () {
 		}
 
 		var newclass = e.className.split(' ');
-		newclass.push(c);
+		newclass.push(c + ' ');
 		e.className = newclass.join(' ');
 	};
 
