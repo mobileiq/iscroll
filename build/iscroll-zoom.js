@@ -1025,15 +1025,25 @@ IScroll.prototype = {
 		newX = this.originX - this.originX * lastScale + this.startX;
 		newY = this.originY - this.originY * lastScale + this.startY;
 
+		// CUSTOM: this.imageCurrentLeftAdjustments added for when zooming against an offset
+		if(!this.imageCurrentLeftAdjustment) {
+			this.imageCurrentLeftAdjustment = 0;
+		}
+		if(!this.imageCurrentTopAdjustment) {
+			this.imageCurrentTopAdjustment = 0;
+		}
+
 		if ( newX > 0 ) {
 			newX = 0;
-		} else if ( newX < this.maxScrollX ) {
+		} else if ( newX < (this.maxScrollX - this.imageCurrentLeftAdjustment)) {
+			// CUSTOM: Adding check for imageCurrentLeftAdjustment
 			newX = this.maxScrollX;
 		}
 
 		if ( newY > 0 ) {
 			newY = 0;
-		} else if ( newY < this.maxScrollY ) {
+		} else if ( newY < (this.maxScrollY - this.imageCurrentTopAdjustment)) {
+			// CUSTOM: Adding check for imageCurrentTopAdjustment
 			newY = this.maxScrollY;
 		}
 
