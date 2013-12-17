@@ -70,6 +70,9 @@ function IScroll (el, options) {
 
 	this.scrollTo(this.options.startX, this.options.startY);
 	this.enable();
+
+	// Custom for the ms Pointer objects;
+	this._pointers = [];
 }
 
 IScroll.prototype = {
@@ -552,6 +555,11 @@ IScroll.prototype = {
 			eventType(target, 'MSPointerMove', this);
 			eventType(target, 'MSPointerCancel', this);
 			eventType(target, 'MSPointerUp', this);
+			// Custom
+			eventType(this.wrapper, 'pointerdown', this);
+			eventType(target, 'pointermove', this);
+			eventType(target, 'pointercancel', this);
+			eventType(target, 'pointerup', this);
 		}
 
 		if ( utils.hasTouch ) {
