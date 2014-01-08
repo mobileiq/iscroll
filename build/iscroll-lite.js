@@ -144,7 +144,11 @@ var utils = (function () {
 
 		MSPointerDown: 3,
 		MSPointerMove: 3,
-		MSPointerUp: 3
+		MSPointerUp: 3,
+
+		pointerdown: 3,
+		pointermove: 3,
+		pointerup: 3
 	});
 
 	me.extend(me.ease = {}, {
@@ -293,6 +297,9 @@ function IScroll (el, options) {
 
 	this.scrollTo(this.options.startX, this.options.startY);
 	this.enable();
+
+	// Custom for the ms Pointer objects;
+	this._pointers = [];
 }
 
 IScroll.prototype = {
@@ -775,6 +782,11 @@ IScroll.prototype = {
 			eventType(target, 'MSPointerMove', this);
 			eventType(target, 'MSPointerCancel', this);
 			eventType(target, 'MSPointerUp', this);
+			// Custom
+			eventType(this.wrapper, 'pointerdown', this);
+			eventType(target, 'pointermove', this);
+			eventType(target, 'pointercancel', this);
+			eventType(target, 'pointerup', this);
 		}
 
 		if ( utils.hasTouch ) {
@@ -847,19 +859,23 @@ IScroll.prototype = {
 		switch ( e.type ) {
 			case 'touchstart':
 			case 'MSPointerDown':
+			case 'pointerdown':
 			case 'mousedown':
 				this._start(e);
 				break;
 			case 'touchmove':
 			case 'MSPointerMove':
+			case 'pointermove':
 			case 'mousemove':
 				this._move(e);
 				break;
 			case 'touchend':
 			case 'MSPointerUp':
+			case 'pointerup':
 			case 'mouseup':
 			case 'touchcancel':
 			case 'MSPointerCancel':
+			case 'pointercancel':
 			case 'mousecancel':
 				this._end(e);
 				break;
