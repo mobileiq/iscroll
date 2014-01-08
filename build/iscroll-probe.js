@@ -1,4 +1,4 @@
-/*! iScroll v5.0.4 ~ (c) 2008-2013 Matteo Spinelli ~ http://cubiq.org/license */
+/*! iScroll v5.0.4 ~ (c) 2008-2014 Matteo Spinelli ~ http://cubiq.org/license */
 var IScroll = (function (window, document, Math) {
 var rAF = window.requestAnimationFrame	||
 	window.webkitRequestAnimationFrame	||
@@ -1454,7 +1454,7 @@ function createDefaultScrollbar (direction, interactive, type) {
 		indicator = document.createElement('div');
 
 	if ( type === true ) {
-		scrollbar.style.cssText = 'position:absolute;z-index:9999';
+		scrollbar.style.cssText = 'position:absolute;z-index:auto';
 		indicator.style.cssText = '-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;position:absolute;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.9);border-radius:3px';
 	}
 
