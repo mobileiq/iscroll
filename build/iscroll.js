@@ -239,7 +239,7 @@ function IScroll (el, options) {
 
 		snapThreshold: 0.334,
 
-// INSERT POINT: OPTIONS 
+// INSERT POINT: OPTIONS
 
 		startX: 0,
 		startY: 0,
@@ -291,7 +291,7 @@ function IScroll (el, options) {
 
 // INSERT POINT: NORMALIZATION
 
-	// Some defaults	
+	// Some defaults
 	this.x = 0;
 	this.y = 0;
 	this.directionX = 0;
@@ -396,8 +396,8 @@ IScroll.prototype = {
 		this.startY    = this.y;
 		this.absStartX = this.x;
 		this.absStartY = this.y;
-		this.pointX    = point.pageX;
-		this.pointY    = point.pageY;
+		this.pointX    = point.screenX;
+		this.pointY    = point.screenY;
 
 		this._execEvent('scrollStart');
 	},
@@ -412,14 +412,14 @@ IScroll.prototype = {
 		}
 
 		var point		= e.touches ? e.touches[0] : e,
-			deltaX		= this.hasHorizontalScroll ? point.pageX - this.pointX : 0,
-			deltaY		= this.hasVerticalScroll   ? point.pageY - this.pointY : 0,
+			deltaX		= this.hasHorizontalScroll ? point.screenX - this.pointX : 0,
+			deltaY		= this.hasVerticalScroll   ? point.screenY - this.pointY : 0,
 			timestamp	= utils.getTime(),
 			newX, newY,
 			absDistX, absDistY;
 
-		this.pointX		= point.pageX;
-		this.pointY		= point.pageY;
+		this.pointX		= point.screenX;
+		this.pointY		= point.screenY;
 
 		this.distX		+= deltaX;
 		this.distY		+= deltaY;
