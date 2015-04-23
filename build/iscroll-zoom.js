@@ -1,4 +1,4 @@
-/*! iScroll v5.0.4 ~ (c) 2008-2014 Matteo Spinelli ~ http://cubiq.org/license */
+/*! iScroll v5.0.4 ~ (c) 2008-2015 Matteo Spinelli ~ http://cubiq.org/license */
 var IScroll = (function (window, document, Math) {
 var rAF = window.requestAnimationFrame	||
 	window.webkitRequestAnimationFrame	||
@@ -621,6 +621,11 @@ IScroll.prototype = {
 
 		if ( x == this.x && y == this.y ) {
 			return false;
+		}
+
+		if ( this.options.snap ) {
+			var snap = this._nearestSnap(x, y);
+			this.currentPage = snap;
 		}
 
 		this.scrollTo(x, y, time, this.options.bounceEasing);
