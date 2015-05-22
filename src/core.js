@@ -1,3 +1,4 @@
+/*jshint bitwise: false*/
 
 function IScroll (el, options) {
 	this.wrapper = typeof el == 'string' ? document.querySelector(el) : el;
@@ -145,8 +146,8 @@ IScroll.prototype = {
 		this.startY    = this.y;
 		this.absStartX = this.x;
 		this.absStartY = this.y;
-		this.pointX    = point.screenX;
-		this.pointY    = point.screenY;
+		this.pointX    = point.pageX;
+		this.pointY    = point.pageY;
 
 		this._execEvent('scrollStart');
 	},
@@ -161,19 +162,23 @@ IScroll.prototype = {
 		}
 
 		var point		= e.touches ? e.touches[0] : e,
-			deltaX		= this.hasHorizontalScroll ? point.screenX - this.pointX : 0,
-			deltaY		= this.hasVerticalScroll   ? point.screenY - this.pointY : 0,
+			deltaX		= this.hasHorizontalScroll ? point.pageX - this.pointX : 0,
+			deltaY		= this.hasVerticalScroll   ? point.pageY - this.pointY : 0,
 			timestamp	= utils.getTime(),
 			newX, newY,
 			absDistX, absDistY;
 
-		this.pointX		= point.screenX;
-		this.pointY		= point.screenY;
+		this.pointX		= point.pageX;
+		this.pointY		= point.pageY;
 
 		this.distX		+= deltaX;
 		this.distY		+= deltaY;
 		absDistX		= Math.abs(this.distX);
 		absDistY		= Math.abs(this.distY);
+
+		if ( this._canPageScroll( this.distX, this.distY ) ) {
+			e.preventDefault();
+		}
 
 		// We need to move at least 10 pixels for the scrolling to initiate
 		if ( timestamp - this.endTime > 300 && (absDistX < 10 && absDistY < 10) ) {
@@ -261,6 +266,10 @@ IScroll.prototype = {
 			time = 0,
 			easing = '';
 
+		if ( this._canPageScroll( newX - this.startX, newY - this.startY ) ) {
+			e.preventDefault();
+		}
+
 		this.scrollTo(newX, newY);	// ensures that the last position is rounded
 
 		this.isInTransition = 0;
@@ -329,6 +338,18 @@ IScroll.prototype = {
 		this._execEvent('scrollEnd');
 	},
 
+	_canPageScroll: function( deltaX, deltaY ) {
+		var scrollXEdge = this.maxScrollX === this.startX || ( deltaX > 0 && this.startX === 0 );
+		var scrollYEdge = this.maxScrollY === this.startY || ( deltaY > 0 && this.startY === 0 );
+
+		if ( ( this.hasHorizontalScroll ^ this.hasVerticalScroll ) ) {
+			if ( ( !scrollXEdge && this.hasHorizontalScroll && Math.abs(deltaX) > 5 ) || ( !scrollYEdge && this.hasVerticalScroll && Math.abs(deltaY) > 5 ) ) {
+				return true;
+			}
+		}
+		return false;
+	},
+
 	_resize: function () {
 		var that = this;
 
@@ -360,12 +381,7 @@ IScroll.prototype = {
 		if ( x == this.x && y == this.y ) {
 			return false;
 		}
-
-		if ( this.options.snap ) {
-			var snap = this._nearestSnap(x, y);
-			this.currentPage = snap;
-		}
-
+		this.currentPage = this._nearestSnap(x, y);
 		this.scrollTo(x, y, time, this.options.bounceEasing);
 
 		return true;
