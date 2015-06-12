@@ -1,4 +1,4 @@
-/*! iScroll v5.0.4 ~ (c) 2008-2014 Matteo Spinelli ~ http://cubiq.org/license */
+/*! iScroll v5.0.4 ~ (c) 2008-2015 Matteo Spinelli ~ http://cubiq.org/license */
 var IScroll = (function (window, document, Math) {
 var rAF = window.requestAnimationFrame	||
 	window.webkitRequestAnimationFrame	||
@@ -225,6 +225,7 @@ var utils = (function () {
 
 	return me;
 })();
+/*jshint bitwise: false*/
 
 function IScroll (el, options) {
 	this.wrapper = typeof el == 'string' ? document.querySelector(el) : el;
@@ -244,7 +245,7 @@ function IScroll (el, options) {
 
 		snapThreshold: 0.334,
 
-// INSERT POINT: OPTIONS 
+// INSERT POINT: OPTIONS
 
 		startX: 0,
 		startY: 0,
@@ -299,7 +300,7 @@ function IScroll (el, options) {
 
 // INSERT POINT: NORMALIZATION
 
-	// Some defaults	
+	// Some defaults
 	this.x = 0;
 	this.y = 0;
 	this.directionX = 0;
@@ -440,6 +441,10 @@ IScroll.prototype = {
 		absDistX		= Math.abs(this.distX);
 		absDistY		= Math.abs(this.distY);
 
+		if ( this._canPageScroll( this.distX, this.distY ) ) {
+			e.preventDefault();
+		}
+
 		// We need to move at least 10 pixels for the scrolling to initiate
 		if ( timestamp - this.endTime > 300 && (absDistX < 10 && absDistY < 10) ) {
 			return;
@@ -532,6 +537,10 @@ IScroll.prototype = {
 			time = 0,
 			easing = '';
 
+		if ( this._canPageScroll( newX - this.startX, newY - this.startY ) ) {
+			e.preventDefault();
+		}
+
 		this.scrollTo(newX, newY);	// ensures that the last position is rounded
 
 		this.isInTransition = 0;
@@ -600,6 +609,18 @@ IScroll.prototype = {
 		this._execEvent('scrollEnd');
 	},
 
+	_canPageScroll: function( deltaX, deltaY ) {
+		var scrollXEdge = this.maxScrollX === this.startX || ( deltaX > 0 && this.startX === 0 );
+		var scrollYEdge = this.maxScrollY === this.startY || ( deltaY > 0 && this.startY === 0 );
+
+		if ( ( this.hasHorizontalScroll ^ this.hasVerticalScroll ) ) {
+			if ( ( !scrollXEdge && this.hasHorizontalScroll && Math.abs(deltaX) > 5 ) || ( !scrollYEdge && this.hasVerticalScroll && Math.abs(deltaY) > 5 ) ) {
+				return true;
+			}
+		}
+		return false;
+	},
+
 	_resize: function () {
 		var that = this;
 
@@ -631,7 +652,7 @@ IScroll.prototype = {
 		if ( x == this.x && y == this.y ) {
 			return false;
 		}
-
+		this.currentPage = this._nearestSnap(x, y);
 		this.scrollTo(x, y, time, this.options.bounceEasing);
 
 		return true;
@@ -1682,9 +1703,7 @@ IScroll.prototype = {
 				if ( this.options.zoom && e.touches && e.touches.length > 1 ) {
 					this._zoomStart(e);
 				}
-
 				break;
-
 			case 'touchmove':
 			case 'MSPointerMove':
 			case 'mousemove':
@@ -1705,7 +1724,6 @@ IScroll.prototype = {
 				}
 				
 				break;
-
 			case 'touchend':
 			case 'MSPointerUp':
 			case 'pointerup':
