@@ -441,7 +441,7 @@ IScroll.prototype = {
 		absDistX		= Math.abs(this.distX);
 		absDistY		= Math.abs(this.distY);
 
-		if ( this._canPageScroll( this.distX, this.distY ) ) {
+		if ( this._preventPageScroll( this.distX, this.distY ) ) {
 			e.preventDefault();
 		}
 
@@ -537,7 +537,7 @@ IScroll.prototype = {
 			time = 0,
 			easing = '';
 
-		if ( this._canPageScroll( newX - this.startX, newY - this.startY ) ) {
+		if ( this._preventPageScroll( newX - this.startX, newY - this.startY ) ) {
 			e.preventDefault();
 		}
 
@@ -609,9 +609,9 @@ IScroll.prototype = {
 		this._execEvent('scrollEnd');
 	},
 
-	_canPageScroll: function( deltaX, deltaY ) {
-		var scrollXEdge = this.maxScrollX === this.startX || ( deltaX > 0 && this.startX === 0 );
-		var scrollYEdge = this.maxScrollY === this.startY || ( deltaY > 0 && this.startY === 0 );
+	_preventPageScroll: function( deltaX, deltaY ) {
+		var scrollXEdge = ( this.maxScrollX === this.startX && deltaX < 0 ) || ( deltaX > 0 && this.startX === 0 );
+		var scrollYEdge = ( this.maxScrollY === this.startY && deltaY < 0 ) || ( deltaY > 0 && this.startY === 0 );
 
 		if ( ( this.hasHorizontalScroll ^ this.hasVerticalScroll ) ) {
 			if ( ( !scrollXEdge && this.hasHorizontalScroll && Math.abs(deltaX) > 5 ) || ( !scrollYEdge && this.hasVerticalScroll && Math.abs(deltaY) > 5 ) ) {
