@@ -246,6 +246,9 @@ function IScroll (el, options) {
 		snapThreshold: 0.334,
 
 // INSERT POINT: OPTIONS
+		disablePointer : !utils.hasPointer,
+		disableTouch : utils.hasPointer || !utils.hasTouch,
+		disableMouse : utils.hasPointer || utils.hasTouch,
 
 		startX: 0,
 		startY: 0,
@@ -859,12 +862,14 @@ IScroll.prototype = {
 		eventType(window, 'orientationchange', this);
 		eventType(window, 'resize', this);
 
-		eventType(this.wrapper, 'mousedown', this);
-		eventType(target, 'mousemove', this);
-		eventType(target, 'mousecancel', this);
-		eventType(target, 'mouseup', this);
+		if ( !this.options.disableMouse ) {
+			eventType(this.wrapper, 'mousedown', this);
+			eventType(target, 'mousemove', this);
+			eventType(target, 'mousecancel', this);
+			eventType(target, 'mouseup', this);
+		}
 
-		if ( utils.hasPointer ) {
+		if ( utils.hasPointer && !this.options.disablePointer ) {
 			eventType(this.wrapper, 'MSPointerDown', this);
 			eventType(target, 'MSPointerMove', this);
 			eventType(target, 'MSPointerCancel', this);
@@ -876,7 +881,7 @@ IScroll.prototype = {
 			eventType(target, 'pointerup', this);
 		}
 
-		if ( utils.hasTouch ) {
+		if ( utils.hasTouch && !this.options.disableTouch ) {
 			eventType(this.wrapper, 'touchstart', this);
 			eventType(target, 'touchmove', this);
 			eventType(target, 'touchcancel', this);
