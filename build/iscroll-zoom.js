@@ -834,14 +834,12 @@ IScroll.prototype = {
 		eventType(window, 'orientationchange', this);
 		eventType(window, 'resize', this);
 
-		if ( !this.options.disableMouse ) {
-			eventType(this.wrapper, 'mousedown', this);
-			eventType(target, 'mousemove', this);
-			eventType(target, 'mousecancel', this);
-			eventType(target, 'mouseup', this);
-		}
+		eventType(this.wrapper, 'mousedown', this);
+		eventType(target, 'mousemove', this);
+		eventType(target, 'mousecancel', this);
+		eventType(target, 'mouseup', this);
 
-		if ( utils.hasPointer && !this.options.disablePointer ) {
+		if ( utils.hasPointer ) {
 			eventType(this.wrapper, 'MSPointerDown', this);
 			eventType(target, 'MSPointerMove', this);
 			eventType(target, 'MSPointerCancel', this);
@@ -853,7 +851,7 @@ IScroll.prototype = {
 			eventType(target, 'pointerup', this);
 		}
 
-		if ( utils.hasTouch && !this.options.disableTouch ) {
+		if ( utils.hasTouch ) {
 			eventType(this.wrapper, 'touchstart', this);
 			eventType(target, 'touchmove', this);
 			eventType(target, 'touchcancel', this);
