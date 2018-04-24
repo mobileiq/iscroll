@@ -246,10 +246,6 @@ function IScroll (el, options) {
 		snapThreshold: 0.334,
 
 // INSERT POINT: OPTIONS
-		disablePointer : !utils.hasPointer,
-		disableTouch : utils.hasPointer || !utils.hasTouch,
-		disableMouse : utils.hasPointer || utils.hasTouch,
-
 		startX: 0,
 		startY: 0,
 		scrollY: true,
