@@ -25,6 +25,24 @@ var utils = (function () {
 		return false;
 	})();
 
+	var  _isPassiveSupported = (function isPassiveSupported() {
+		var passiveSupported = false;
+
+		try {
+			var options = Object.defineProperty({}, "passive", {
+				get: function() {
+				passiveSupported = true;
+				}
+			});
+
+			window.addEventListener("test", options, options);
+			window.removeEventListener("test", options, options);
+		} catch(err) {
+			passiveSupported = false;
+		}
+		return passiveSupported;
+	})();
+
 	function _prefixStyle (style) {
 		if ( _vendor === false ) return false;
 		if ( _vendor === '' ) return style;
@@ -40,11 +58,17 @@ var utils = (function () {
 	};
 
 	me.addEvent = function (el, type, fn, capture) {
-		el.addEventListener(type, fn, !!capture);
+		el.addEventListener(type, fn, _isPassiveSupported ? {
+			passive: false,
+			capture: !!capture
+		} : !!capture);
 	};
 
 	me.removeEvent = function (el, type, fn, capture) {
-		el.removeEventListener(type, fn, !!capture);
+		el.removeEventListener(type, fn, _isPassiveSupported ? {
+			passive: false,
+			capture: !!capture
+		} : !!capture);
 	};
 
 	me.momentum = function (current, start, time, lowerMargin, wrapperSize) {
